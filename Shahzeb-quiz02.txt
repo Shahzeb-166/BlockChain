@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: MIT
+// Compatible with OpenZeppelin Contracts ^5.0.0
+pragma solidity ^0.8.22;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+
+contract Shahzeb is ERC20 {
+    constructor(address recipient) ERC20("Shahzeb", "SHZ") {
+        _mint(recipient, 100000 * 10 ** decimals());
+    }
+}
+contract Zaib is ERC20 {
+    constructor(address recipient) ERC20("Zaib", "ZIB") {
+        _mint(recipient, 100000 * 10 ** decimals());
+    }
+}
+
+contract ERC20Auction {
+    struct Listing{
+        address seller;
+       IERC20 token;
+       uint pricePertoken;
+       uint remainingAmount;
+    }
+    IERC20 shahzeb;
+    IERC20 zaib;
+    constructor(address _tokenA,address _tokenB){
+        shahzeb=IERC20(_tokenA);
+        zaib=IERC20(_tokenB);
+    }
+
+    function getlist(IERC20 name) view public returns(uint) 
+    {
+        return name.balanceOf(msg.sender);
+    }
+
+    function buyToken(IERC20 addr, uint256 amount) external {
+        require(amount >0, "amount should be greater than zero");
+        require(amount <shahzeb.balanceOf(msg.sender), "amount should be less than total");
+        shahzeb.transfer(address(this),amount);
+
+    }
+    function listToken (IERC20 tokenAddress, uint pricePertoken,uint remainingAmount )  external  {
+        Listing(msg.sender,tokenAddress,pricePertoken,remainingAmount);
+
+    }
+}
